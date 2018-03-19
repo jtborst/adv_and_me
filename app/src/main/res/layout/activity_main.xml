@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Copyright (C) 2017 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!--Copyright (C) 2017 The Android Open Source Project
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
@@ -11,17 +10,29 @@
  limitations under the License.-->
 
 <!-- Display the static master list fragment -->
-<fragment
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/master_list_fragment"
-    android:name="com.example.android.android_me.ui.MasterListFragment"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-<!-- TODO (1) Create a new two-pane activity_main layout for tablets (sw600dp)
+    <fragment
+
+        android:id="@+id/master_list_fragment"
+        android:name="com.example.android.android_me.ui.MasterListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- The "Next" button -->
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:text="Next" />
+</LinearLayout><!-- TODO (1) Create a new two-pane activity_main layout for tablets (sw600dp)
 This means creating a new layout folder for tablet screens and another activity_main.xml -->
 
-<!-- TODO (2) Build the layout to display the MasterListFragment and all BodyPartFragments -->
-<!-- Specifically, this layout should be a horizontal LinearLayout with the MasterListFragment on the left of the
+    <!-- TODO (2) Build the layout to display the MasterListFragment and all BodyPartFragments --><!-- Specifically, this layout should be a horizontal LinearLayout with the MasterListFragment on the left of the
  screen and three vertically arranged FrameLayout containers for the dynamic BodyPartFragments on the right side -->
 

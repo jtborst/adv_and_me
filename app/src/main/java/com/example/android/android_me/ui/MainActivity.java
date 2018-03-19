@@ -18,12 +18,14 @@ package com.example.android.android_me.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.android.android_me.R;
+import com.example.android.android_me.data.AndroidImageAssets;
 
 // This activity is responsible for displaying the master list of all images
 // Implement the MasterListFragment callback, OnImageClickListener
@@ -37,16 +39,43 @@ public class MainActivity extends AppCompatActivity implements MasterListFragmen
 
     // TODO (3) Create a variable to track whether to display a two-pane or single-pane UI
         // A single-pane display refers to phone screens, and two-pane to larger tablet screens
-
+    private boolean tablet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        tablet = getResources().getBoolean(R.bool.isTablet);
+
         setContentView(R.layout.activity_main);
 
         // TODO (4) If you are making a two-pane display, add new BodyPartFragments to create an initial Android-Me image
         // Also, for the two-pane display, get rid of the "Next" button in the master list fragment
 
+        if (tablet && savedInstanceState == null) {
+            BodyPartFragment headFragment = new BodyPartFragment();
+            // Set the list of image id's for the head fragment and set the position to the second image in the list
+            headFragment.setImageIds(AndroidImageAssets.getHeads());
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.head_container, headFragment)
+                    .commit();
+            BodyPartFragment bodyFragment = new BodyPartFragment();
+            bodyFragment.setImageIds(AndroidImageAssets.getBodies());
+            bodyFragment.setListIndex(bodyIndex);
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.body_container, bodyFragment)
+                    .commit();
+
+            BodyPartFragment legFragment = new BodyPartFragment();
+            legFragment.setImageIds(AndroidImageAssets.getLegs());
+            legFragment.setListIndex(legIndex);
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.leg_container, legFragment)
+                    .commit();
+        }
     }
 
     // Define the behavior for onImageSelected
@@ -80,24 +109,59 @@ public class MainActivity extends AppCompatActivity implements MasterListFragmen
             default: break;
         }
 
-        // Put this information in a Bundle and attach it to an Intent that will launch an AndroidMeActivity
-        Bundle b = new Bundle();
-        b.putInt("headIndex", headIndex);
-        b.putInt("bodyIndex", bodyIndex);
-        b.putInt("legIndex", legIndex);
+        if (!tablet) {
+            // Put this information in a Bundle and attach it to an Intent that will launch an AndroidMeActivity
+            Bundle b = new Bundle();
+            b.putInt("headIndex", headIndex);
+            b.putInt("bodyIndex", bodyIndex);
+            b.putInt("legIndex", legIndex);
 
-        // Attach the Bundle to an intent
-        final Intent intent = new Intent(this, AndroidMeActivity.class);
-        intent.putExtras(b);
+            // Attach the Bundle to an intent
+            final Intent intent = new Intent(this, AndroidMeActivity.class);
+            intent.putExtras(b);
 
-        // The "Next" button launches a new AndroidMeActivity
-        Button nextButton = (Button) findViewById(R.id.next_button);
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(intent);
+            // The "Next" button launches a new AndroidMeActivity
+            Button nextButton = (Button) findViewById(R.id.next_button);
+            nextButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(intent);
+                }
+            });
+        } else {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            switch(bodyPartNumber) {
+                case 0:
+                    BodyPartFragment headFragment = new BodyPartFragment();
+                    headFragment.setImageIds(AndroidImageAssets.getHeads());
+                    headFragment.setListIndex(headIndex);
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.head_container, headFragment)
+                            .commit();
+                    break;
+                case 1:
+                    BodyPartFragment bodyFragment = new BodyPartFragment();
+                    bodyFragment.setImageIds(AndroidImageAssets.getBodies());
+                    bodyFragment.setListIndex(bodyIndex);
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.body_container, bodyFragment)
+                            .commit();
+                    break;
+                case 2:
+                    BodyPartFragment legFragment = new BodyPartFragment();
+                    legFragment.setImageIds(AndroidImageAssets.getLegs());
+                    legFragment.setListIndex(legIndex);
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.leg_container, legFragment)
+                            .commit();
+                    break;
+                default: break;
             }
-        });
+        }
 
     }
 
