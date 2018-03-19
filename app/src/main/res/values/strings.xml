@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Android_Me</string>
+    <string name="label_button_grid">Show</string>
 </resources>
